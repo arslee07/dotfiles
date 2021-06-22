@@ -39,6 +39,5 @@ alias cat="bat"
 # Add Flutter to PATH
 export PATH="$PATH:$HOME/flutter/bin"
 
-# Screenfetch on startup
 clear
 PF_COL1=4 PF_COL2=4 PF_COL3=4 pfetch
