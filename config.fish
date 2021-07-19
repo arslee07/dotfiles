@@ -1,3 +1,7 @@
+# Set TrueColor support
+set -g default-terminal "xterm-256color"
+set -ga terminal-overrides ",*256col*:Tc"
+
 # Hide fish greeting
 set fish_greeting
 
@@ -5,8 +9,10 @@ set fish_greeting
 alias del="trash"
 alias sai="sudo apt install"
 alias sau="sudo apt update"
-alias fconf="nano ~/.config/fish/config.fish"
 alias c="clear"
+alias fconf="nano ~/.config/fish/config.fish"
+alias tconf="nano ~/.tmux.conf"
+alias vconf="nano ~/.config/nvim/init.vim"
 
 # Fish command history
 function history
@@ -16,6 +22,8 @@ end
 # Bobthefish settings
 set -g theme_color_scheme dracula
 set -g theme_date_format "+%a %H:%M"
+set -g theme_display_user ssh
+set -g theme_display_hostname no
 
 # Easy file backup
 function backup --argument filename
@@ -34,10 +42,7 @@ alias l.="exa -a | egrep '^\.'"                                     # show only 
 alias du="dust"
 
 # Replace cat with bat
-alias cat="bat"
-
-# Add Flutter to PATH
-export PATH="$PATH:$HOME/flutter/bin"
+alias cat="batcat"
 
 clear
 PF_COL1=4 PF_COL2=4 PF_COL3=4 pfetch
