@@ -5,8 +5,9 @@
 
 ## KDE appearance
 - Theme: `Breeze`
-- Color scheme: `BetterDracula` (my own btw)
-- Icons: `Numix-Square` with custom folder colors
+- Color scheme: [`BetterDracula`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula.colors) *
+- Icons: [`Numix-Square`](https://github.com/numixproject/numix-icon-theme-square) with custom folder colors
+- `Konsole` theme : [`BetterDracula-Konsole`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula-Konsole.colorscheme) * 
 
 ## Plugins
 - OhMyFish plugins : [`theme-bobthefish`](https://github.com/oh-my-fish/theme-bobthefish)
@@ -19,7 +20,7 @@
 - `du` replacement : [`dust`](https://github.com/bootandy/dust)
 
 ## Miscellaneous
-- `Telegram theme` : [`BetterDracula`](https://t.me/addtheme/betterdracula)
+- `Telegram theme` : [`BetterDracula`](https://t.me/addtheme/betterdracula) *
 - `BetterDiscord theme` : [`Dracula`](https://betterdiscord.app/theme/dracula)
 
 ## Hardware
@@ -27,3 +28,6 @@
 - `GPU` : AMD Radeon RX 580 4G
 - `RAM` : 16 GB
 - `SSD` : Samsung 860 EVO 500 GB
+
+
+###### * my own lol xd
