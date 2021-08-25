@@ -1,18 +1,18 @@
 ## General
-- Distro : `Ubuntu 20.04 LTS`
+- Distro : `Arch Linux`
 - Shell : [`fish`](https://fishshell.com/)
 - Desktop Enviroment : `KDE Plasma 5`
 
 ## KDE appearance
-- Theme: `Breeze`
-- Color scheme: [`BetterDracula`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula.colors) *
-- Icons: [`Numix-Square`](https://github.com/numixproject/numix-icon-theme-square) with custom folder colors
+- Theme : `Breeze`
+- Color scheme : [`BetterDracula`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula.colors) *
+- Icons : [`Numix-Square`](https://github.com/numixproject/numix-icon-theme-square) with custom folder colors
 - `Konsole` theme : [`BetterDracula-Konsole`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula-Konsole.colorscheme) * 
 
 ## Plugins
 - OhMyFish plugins : [`theme-bobthefish`](https://github.com/oh-my-fish/theme-bobthefish)
 - Tmux plugins : [`dracula`](https://github.com/dracula/tmux)
-- Vim plugins : [`dracula`](https://github.com/dracula/vim), [`dart-vim`](https://github.com/dart-lang/dart-vim-plugin)
+- Vim plugins : [`dracula`](https://github.com/dracula/vim), [`dart-vim`](https://github.com/dart-lang/dart-vim-plugin) and some `coc.cvim` plugins
 
 ## Terminal tools
 - `ls` replacement : [`exa`](https://github.com/ogham/exa)
@@ -21,7 +21,7 @@
 
 ## Miscellaneous
 - `Telegram theme` : [`BetterDracula`](https://t.me/addtheme/betterdracula) *
-- `BetterDiscord theme` : [`Dracula`](https://betterdiscord.app/theme/dracula)
+- `BetterDiscord theme` : [`Dracula`](https://betterdiscord.app/theme/dracula) (please note that using BD is against TOS so be careful)
 
 ## Hardware
 - `CPU` : Intel Core i3-9100f
