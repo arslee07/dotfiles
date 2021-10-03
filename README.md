@@ -21,7 +21,6 @@
 
 ## Miscellaneous
 - `Telegram theme` : [`BetterDracula`](https://t.me/addtheme/betterdracula) *
-- `BetterDiscord theme` : [`Dracula`](https://betterdiscord.app/theme/dracula) (please note that using BD is against TOS so be careful)
 
 ## Hardware
 - `CPU` : Intel Core i3-9100f
