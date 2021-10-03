@@ -7,9 +7,6 @@
 " ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝ "
 " Config made by arslee (arslee.dev)                 "
 "                                                    "
-" Main principles:                                   "
-" 1. Leader key for navigation                       "
-" 2. i forgor                                        "
 " Use it as you want, I don't forbid anything :)     "
 " -------------------------------------------------- "
 
@@ -28,13 +25,17 @@ endif
 call plug#begin('~/.config/nvim/plugged')
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'dart-lang/dart-vim-plugin'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-airline/vim-airline'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ryanoasis/vim-devicons'
 Plug 'jiangmiao/auto-pairs'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'luochen1990/rainbow'
+Plug 'junegunn/fzf', {'dir': '~/.fzf','do': './install --all'}
+Plug 'junegunn/fzf.vim' " needed for previews
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'antoinemadec/coc-fzf', {'branch': 'release'}
+Plug 'habamax/vim-godot'
 
 " Autoinstall missing plugins
 autocmd VimEnter *
@@ -58,10 +59,11 @@ let g:coc_global_extensions = [
       \'coc-flutter',
       \'coc-json',
       \'coc-git',
+      \'coc-discord-rpc'
 \]
 
-" Bind the F2 key to rename
-:nmap <F2> <Plug>(coc-rename)
+" Bind gr to rename
+:nmap <silent><leader>r <Plug>(coc-rename)
 
 " Bind the dot key to show suggestions
 :nnoremap <silent> . :CocAction<CR>
@@ -78,8 +80,13 @@ function! s:show_documentation()
   endif
 endfunction
 
-" Bind the F12 key to go to definition
-nmap <F12> <Plug>(coc-definition)
+" Bind gd to go to definition
+" GoTo code navigation.
+nmap <silent> gd :call CocAction('jumpDefinition', 'tab drop') <CR>
+nmap <silent> gy :call CocAction('jumpTypeDefinition', 'tab drop') <CR>
+nmap <silent> gi :call CocAction('jumpImplementation', 'tab drop') <CR>
+nmap <silent> gr <Plug>(coc-references)
+:nnoremap <silent> ? :call CocAction('diagnosticInfo') <CR>
 
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
@@ -100,10 +107,8 @@ inoremap <silent><expr> <Tab>
 " coc-explorer
 " .............................................................................
 
-" Bind Ctrl+E to open the coc-explorer
-" i love floating mode btw
-:nnoremap <C-E> :CocCommand explorer --position floating<CR>
-
+" Bind ge to open the coc-explorer
+:nnoremap <silent>ge :CocCommand explorer<CR>
 
 
 " .............................................................................
@@ -111,12 +116,6 @@ inoremap <silent><expr> <Tab>
 " .............................................................................
 
 let g:airline_theme='dracula'
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_alt_sep = ''
-:let g:airline#extensions#tabline#show_buffers = 0
 let g:airline_filetype_overrides = {
     \ 'coc-explorer':  [ 'CoC Explorer', '' ],
     \ 'defx':  ['defx', '%{b:defx.paths[0]}'],
@@ -131,7 +130,6 @@ let g:airline_filetype_overrides = {
     \ 'vimshell': ['vimshell','%{vimshell#get_status_string()}'],
     \ 'vaffle' : [ 'Vaffle', '%{b:vaffle.dir}' ],
 \ }
-"let g:airline_section_x = '%lsp_error_count'
 
 
 " .............................................................................
@@ -150,30 +148,81 @@ let g:strip_whitespace_on_save=1
 
 let g:rainbow_active = 1
 
+" .............................................................................
+" junegunn/fzf.vim and antoinemadec/coc-fzf
+" .............................................................................
 
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+nmap <silent> <space><space> :Files<CR>
+nmap <silent> <space>g :GFiles<CR>
+nmap <silent> <space>s :GFiles?<CR>
+nmap <silent> <space>d :CocFzfList diagnostics<CR>
+nmap <silent> <space>c :CocFzfList commits<CR>
+nmap <silent> <space>l :CocFzfList<CR>
 
-" Bind Ctrl+S to save
-:nnoremap <C-s> :w<CR>
+" Convert tab to 4 spaces
+set tabstop=4 shiftwidth=4 expandtab
 
-" Bind Ctrl+Q to quit
-:nnoremap <C-q> :q<CR>
-
-" Bind Alt+Arrow key to move line(s) up or down
-:nnoremap <A-Up>   :m-2<CR>
-:nnoremap <A-Down> :m+1<CR>
-
-" Bind Ctrl+<arrow> to switch between tabs
-:nnoremap <leader><Left> :tabprevious<CR>
-:nnoremap <leader><Right> :tabnext<CR>
-
-" Convert tabs to 2 spaces
-" TODO: make 4 spaces for python, etc.
-set tabstop=2 shiftwidth=2 expandtab
+" Dart related indent settings
+function! DartSettings() abort
+    set tabstop=2 shiftwidth=2 expandtab
+endfunction
+augroup dart | au!
+    au FileType dart call DartSettings()
+augroup end
 
 " Enable TrueColor support
 if (has("termguicolors"))
   set termguicolors
 endif
+
+function MoveToPrevTab()
+  "there is only one window
+  if tabpagenr('$') == 1 && winnr('$') == 1
+    return
+  endif
+  "preparing new window
+  let l:tab_nr = tabpagenr('$')
+  let l:cur_buf = bufnr('%')
+  if tabpagenr() != 1
+    close!
+    if l:tab_nr == tabpagenr('$')
+      tabprev
+    endif
+    vsp
+  else
+    close!
+    exe "0tabnew"
+  endif
+  "opening current buffer in new window
+  exe "b".l:cur_buf
+endfunc
+
+function MoveToNextTab()
+  "there is only one window
+  if tabpagenr('$') == 1 && winnr('$') == 1
+    return
+  endif
+  "preparing new window
+  let l:tab_nr = tabpagenr('$')
+  let l:cur_buf = bufnr('%')
+  if tabpagenr() < tab_nr
+    close!
+    if l:tab_nr == tabpagenr('$')
+      tabnext
+    endif
+    vsp
+  else
+    close!
+    tabnew
+  endif
+  "opening current buffer in new window
+  exe "b".l:cur_buf
+endfunc
+
+" Tabs merge
+nnoremap <silent>mt :call MoveToNextTab()<CR>
+nnoremap <silent>mT :call MoveToPrevTab()<CR>
 
 " TextEdit might fail if hidden is not set.
 set hidden
@@ -185,18 +234,37 @@ set updatetime=100
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
 
+" Give more space for displaying messages
+set cmdheight=2
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("nvim-0.5.0") || has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
 " Enable syntax highlight
 syntax on
 
 " Enable mouse support
-:set mouse=a
+set mouse=a
 
 " Enable line numbers
-:set number
+set number
 
 " disable this fucking shit
-set nobackup
-set nowritebackup
+:set nobackup
+:set nowritebackup
+
+" Auto move cursor
+set whichwrap+=<,>,[,]
+
+" Disaple text wrapping
+set splitright
+set nowrap
 
 " Enable Dracula colorscheme
-colorscheme dracula
+:colorscheme dracula
