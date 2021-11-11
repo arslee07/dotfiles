@@ -6,8 +6,6 @@
 " ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║ "
 " ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝ "
 " Config made by arslee (arslee.dev)                 "
-"                                                    "
-" Use it as you want, I don't forbid anything :)     "
 " -------------------------------------------------- "
 
 
@@ -29,8 +27,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-airline/vim-airline'
 Plug 'ryanoasis/vim-devicons'
-Plug 'jiangmiao/auto-pairs'
-Plug 'ntpeters/vim-better-whitespace'
 Plug 'junegunn/fzf', {'dir': '~/.fzf','do': './install --all'}
 Plug 'junegunn/fzf.vim' " needed for previews
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -59,17 +55,19 @@ let g:coc_global_extensions = [
       \'coc-flutter',
       \'coc-json',
       \'coc-git',
-      \'coc-discord-rpc'
+      \'coc-discord-rpc',
+      \'coc-pairs',
+      \'coc-snippets',
 \]
 
 " Bind gr to rename
 :nmap <silent><leader>r <Plug>(coc-rename)
 
 " Bind the dot key to show suggestions
-:nnoremap <silent> . :CocAction<CR>
+nnoremap <silent> . :CocAction<CR>
 
 " Bind the comma key to show documentation
-:nnoremap <silent> , :call <SID>show_documentation()<CR>
+nnoremap <silent> , :call <SID>show_documentation()<CR>
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
@@ -86,21 +84,22 @@ nmap <silent> gd :call CocAction('jumpDefinition', 'tab drop') <CR>
 nmap <silent> gy :call CocAction('jumpTypeDefinition', 'tab drop') <CR>
 nmap <silent> gi :call CocAction('jumpImplementation', 'tab drop') <CR>
 nmap <silent> gr <Plug>(coc-references)
-:nnoremap <silent> ? :call CocAction('diagnosticInfo') <CR>
+nnoremap <silent> ? :call CocAction('diagnosticInfo') <CR>
 
 " Highlight the symbol and its references when holding the cursor
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Use <tab> for trigger completion and navigate to the next complete item
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
 function! s:check_back_space() abort
   let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
-
+let g:coc_snippet_next = '<tab>'
 
 
 " .............................................................................
@@ -108,7 +107,7 @@ inoremap <silent><expr> <Tab>
 " .............................................................................
 
 " Bind ge to open the coc-explorer
-:nnoremap <silent>ge :CocCommand explorer<CR>
+nnoremap <silent>ge :CocCommand explorer<CR>
 
 
 " .............................................................................
@@ -132,15 +131,6 @@ let g:airline_filetype_overrides = {
 \ }
 
 
-" .............................................................................
-" ntpeters/vim-better-whitespace
-" .............................................................................
-
-let g:strip_whitespace_confirm=0
-let g:strip_whitelines_at_eof=1
-let g:strip_whitespace_on_save=1
-
-
 
 " .............................................................................
 " luochen1990/rainbow
@@ -148,24 +138,10 @@ let g:strip_whitespace_on_save=1
 
 let g:rainbow_active = 1
 
-" .............................................................................
-" junegunn/fzf.vim and antoinemadec/coc-fzf
-" .............................................................................
 
-let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
-nmap <silent> <space><space> :Files<CR>
-nmap <silent> <space>g :GFiles<CR>
-nmap <silent> <space>s :GFiles?<CR>
-nmap <silent> <space>d :CocFzfList diagnostics<CR>
-nmap <silent> <space>c :CocFzfList commits<CR>
-nmap <silent> <space>l :CocFzfList<CR>
-
-" Convert tab to 4 spaces
-set tabstop=4 shiftwidth=4 expandtab
-
-" Dart related indent settings
+" Convert tabs to 2 spaces
 function! DartSettings() abort
-    set tabstop=2 shiftwidth=2 expandtab
+    set tabstop=2 shiftwidth=2
 endfunction
 augroup dart | au!
     au FileType dart call DartSettings()
@@ -175,6 +151,15 @@ augroup end
 if (has("termguicolors"))
   set termguicolors
 endif
+
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+nmap <silent> <space><space> :Files<CR>
+nmap <silent> <space>g :GFiles<CR>
+nmap <silent> <space>s :GFiles?<CR>
+nmap <silent> <space>d :CocFzfList diagnostics<CR>
+nmap <silent> <space>c :CocFzfList commits<CR>
+nmap <silent> <space>l :CocFzfList<CR>
+
 
 function MoveToPrevTab()
   "there is only one window
@@ -220,7 +205,6 @@ function MoveToNextTab()
   exe "b".l:cur_buf
 endfunc
 
-" Tabs merge
 nnoremap <silent>mt :call MoveToNextTab()<CR>
 nnoremap <silent>mT :call MoveToPrevTab()<CR>
 
@@ -246,6 +230,9 @@ else
   set signcolumn=yes
 endif
 
+" Automatically strip trailing spaces on buffer write
+autocmd BufWritePre * :%s/\s\+$//e
+
 " Enable syntax highlight
 syntax on
 
@@ -256,15 +243,19 @@ set mouse=a
 set number
 
 " disable this fucking shit
-:set nobackup
-:set nowritebackup
+set nobackup
+set nowritebackup
 
 " Auto move cursor
 set whichwrap+=<,>,[,]
 
-" Disaple text wrapping
 set splitright
 set nowrap
 
+" Indent stuff
+set smarttab
+set expandtab
+set smartindent
+
 " Enable Dracula colorscheme
-:colorscheme dracula
+colorscheme dracula
