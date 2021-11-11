@@ -256,6 +256,7 @@ set nowrap
 set smarttab
 set expandtab
 set smartindent
+filetype indent on
 
 " Enable Dracula colorscheme
 colorscheme dracula
