@@ -9,11 +9,6 @@
 - Icons : [`Numix-Square`](https://github.com/numixproject/numix-icon-theme-square) with custom folder colors
 - `Konsole` theme : [`BetterDracula-Konsole`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula-Konsole.colorscheme) * 
 
-## Plugins
-- OhMyFish plugins : [`theme-bobthefish`](https://github.com/oh-my-fish/theme-bobthefish)
-- Tmux plugins : [`dracula`](https://github.com/dracula/tmux)
-- Vim plugins : [`dracula`](https://github.com/dracula/vim), [`dart-vim`](https://github.com/dart-lang/dart-vim-plugin) and some `coc.cvim` plugins
-
 ## Terminal tools
 - `ls` replacement : [`exa`](https://github.com/ogham/exa)
 - `cat` replacement : [`bat`](https://github.com/sharkdp/bat)
