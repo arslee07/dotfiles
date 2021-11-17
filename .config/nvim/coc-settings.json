@@ -5,6 +5,8 @@
 		"json",
 		"python3"
 	],
+	"suggest.autoTrigger": "none",
+	"suggest.noselect": false,
 	"explorer.width": 30,
 	"explorer.buffer.root.template": "[icon & 1] OPENED EDITORS",
 	"explorer.file.root.template": "[icon & 1] PROJECT ([root])",
@@ -17,7 +19,15 @@
 	"explorer.icon.enableNerdfont": true,
 	"explorer.buffer.tabOnly": true,
 	"explorer.keyMappings.global": {
-		"<Left>": ["wait", "collapse"],
-    	"<Right>": ["wait", "expandable?", "expand", "open"],
+		"<Left>": [
+			"wait",
+			"collapse"
+		],
+		"<Right>": [
+			"wait",
+			"expandable?",
+			"expand",
+			"open"
+		]
 	}
 }

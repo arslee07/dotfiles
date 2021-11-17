@@ -1,0 +1,10 @@
+configuration {
+        drun-display-format: "{icon} {name} {description}";
+        font: "UbuntuMono Nerd Font 14";
+        run-command: "bash -i -c '{cmd}'";
+        show-icons: true;
+        run-shell-command: "alacritty -e zsh -i -c '{cmd}'";
+        modi: "drun,run,ssh,window";
+}
+
+@import "~/.config/rofi/themes/colors.rasi"

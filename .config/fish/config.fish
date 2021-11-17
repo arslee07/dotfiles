@@ -1,7 +1,3 @@
-# Set TrueColor support
-#set -g default-terminal "xterm-256color"
-#set -g terminal-overrides ",*256col*:Tc"
-
 # Hide fish greeting
 set fish_greeting
 
@@ -40,15 +36,14 @@ alias du="dust"
 # Replace cat with bat
 alias cat="bat"
 
-# Some Dart specific exports
 export PATH="$PATH:/home/arslee/flutter/bin"
 export CHROME_EXECUTABLE="/usr/bin/google-chrome-stable"
 export PATH="$PATH":"/home/arslee/.pub-cache/bin"
+export PATH="$PATH":"/home/arslee/.local/bin"
 
-# Set TrueColor support for Micro
 export MICRO_TRUECOLOR=1
+export BAT_THEME=Dracula
 
-# Init Starship prompt
 starship init fish | source
 
 clear

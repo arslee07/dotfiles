@@ -1,0 +1,26 @@
+[[item]]
+file = "~/.config/nvim/colors/base16.vim"
+template = "vim"
+rewrite = true
+
+[[item]]
+file = "~/.config/alacritty/alacritty.yml"
+template = "alacritty"
+
+[[item]]
+file = "~/.tmux.conf"
+template = "tmux"
+
+[[item]]
+file = "~/.config/i3/config"
+template = "i3"
+hook = "i3-msg reload"
+
+[[item]]
+file = "~/.config/rofi/themes/colors.rasi"
+template = "rofi"
+rewrite = true
+
+[[item]]
+file = "~/.config/dunst/dunstrc"
+template = "dunst"

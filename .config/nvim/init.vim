@@ -22,6 +22,7 @@ endif
 " Setup plugins
 call plug#begin('~/.config/nvim/plugged')
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'casonadams/vim-dim'
 Plug 'dart-lang/dart-vim-plugin'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline-themes'
@@ -32,6 +33,8 @@ Plug 'junegunn/fzf.vim' " needed for previews
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf', {'branch': 'release'}
 Plug 'habamax/vim-godot'
+Plug 'chriskempson/base16-vim'
+
 
 " Autoinstall missing plugins
 autocmd VimEnter *
@@ -114,7 +117,7 @@ nnoremap <silent>ge :CocCommand explorer<CR>
 " vim-airline/vim-airline
 " .............................................................................
 
-let g:airline_theme='dracula'
+"let g:airline_theme='dracula'
 let g:airline_filetype_overrides = {
     \ 'coc-explorer':  [ 'CoC Explorer', '' ],
     \ 'defx':  ['defx', '%{b:defx.paths[0]}'],
@@ -138,14 +141,6 @@ let g:airline_filetype_overrides = {
 
 let g:rainbow_active = 1
 
-
-" Convert tabs to 2 spaces
-function! DartSettings() abort
-    set tabstop=2 shiftwidth=2
-endfunction
-augroup dart | au!
-    au FileType dart call DartSettings()
-augroup end
 
 " Enable TrueColor support
 if (has("termguicolors"))
@@ -252,11 +247,18 @@ set whichwrap+=<,>,[,]
 set splitright
 set nowrap
 
-" Indent stuff
 set smarttab
 set expandtab
 set smartindent
 filetype indent on
 
 " Enable Dracula colorscheme
-colorscheme dracula
+colorscheme base16
+
+" Convert tabs to 2 spaces
+function! DartSettings() abort
+    set tabstop=2 shiftwidth=2
+endfunction
+augroup dart | au!
+    au FileType dart call DartSettings()
+augroup end
