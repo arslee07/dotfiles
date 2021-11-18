@@ -1,3 +1,7 @@
+# Set TrueColor support
+set -g default-terminal "xterm-256color"
+set -g terminal-overrides ",*256col*:Tc"
+
 # Hide fish greeting
 set fish_greeting
 
@@ -23,11 +27,11 @@ function backup --argument filename
 end
 
 # Replace ls with exa
-alias la='exa -al --color=always --group-directories-first --icons' # preferred listing
-alias ls='exa  --color=always --group-directories-first --icons'    # not dotted files and dirs
-alias lsa='exa -a --color=always --group-directories-first --icons' # all files and dirs
-alias ll='exa -l --color=always --group-directories-first --icons'  # long format
-alias lt='exa -aT --color=always --group-directories-first --icons' # tree listing
+alias la='exa -al --color=always --group-directories-first' # preferred listing
+alias ls='exa  --color=always --group-directories-first'    # not dotted files and dirs
+alias lsa='exa -a --color=always --group-directories-first' # all files and dirs
+alias ll='exa -l --color=always --group-directories-first'  # long format
+alias lt='exa -aT --color=always --group-directories-first' # tree listing
 alias l.="exa -a | egrep '^\.'"                                     # show only dotfiles
 
 # Replace du with dust
@@ -43,6 +47,8 @@ export PATH="$PATH":"/home/arslee/.local/bin"
 
 export MICRO_TRUECOLOR=1
 export BAT_THEME=Dracula
+
+bash /home/arslee/.config/fish/theme.sh
 
 starship init fish | source
 
