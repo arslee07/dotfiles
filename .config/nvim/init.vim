@@ -8,7 +8,7 @@
 " Config made by arslee (arslee.dev)                 "
 " -------------------------------------------------- "
 
-
+set nocompatible
 
 " Autoinstall vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -20,6 +20,7 @@ endif
 
 
 " Setup plugins
+filetype plugin indent on
 call plug#begin('~/.config/nvim/plugged')
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'casonadams/vim-dim'
@@ -27,14 +28,13 @@ Plug 'dart-lang/dart-vim-plugin'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-airline/vim-airline'
-Plug 'ryanoasis/vim-devicons'
+" Plug 'ryanoasis/vim-devicons'
 Plug 'junegunn/fzf', {'dir': '~/.fzf','do': './install --all'}
 Plug 'junegunn/fzf.vim' " needed for previews
+Plug 'sheerun/vim-polyglot'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf', {'branch': 'release'}
 Plug 'habamax/vim-godot'
-Plug 'chriskempson/base16-vim'
-
 
 " Autoinstall missing plugins
 autocmd VimEnter *
@@ -53,14 +53,13 @@ call plug#end()
 let g:coc_global_extensions = [
       \'coc-markdownlint',
       \'coc-highlight',
-      \'coc-pyright',
       \'coc-explorer',
-      \'coc-flutter',
       \'coc-json',
       \'coc-git',
       \'coc-discord-rpc',
       \'coc-pairs',
       \'coc-snippets',
+      \'coc-docker',
 \]
 
 " Bind gr to rename
@@ -250,12 +249,11 @@ set nowrap
 set smarttab
 set expandtab
 set smartindent
-filetype indent on
+filetype plugin indent on
 
 " Enable Dracula colorscheme
-colorscheme base16
+colorscheme dracula
 
-" Convert tabs to 2 spaces
 function! DartSettings() abort
     set tabstop=2 shiftwidth=2
 endfunction
