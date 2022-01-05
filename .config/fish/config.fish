@@ -1,6 +1,6 @@
 # Set TrueColor support
-set -g default-terminal "xterm-256color"
-set -g terminal-overrides ",*256col*:Tc"
+#set -g default-terminal "xterm-256color"
+#set -g terminal-overrides ",*256col*:Tc"
 
 # Hide fish greeting
 set fish_greeting
@@ -48,8 +48,10 @@ export PATH="$PATH":"/home/arslee/.local/bin"
 export MICRO_TRUECOLOR=1
 export BAT_THEME=Dracula
 
-bash /home/arslee/.config/fish/theme.sh
-
 starship init fish | source
+
+bash ~/.config/fish/theme.sh
+
+set -Ux FZF_DEFAULT_OPTS "--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
 
 clear
