@@ -3,9 +3,10 @@
 - Shell : [`fish`](https://fishshell.com/)
 - Desktop Enviroment : `KDE Plasma 5`
 
-## KDE appearance
+## Plasma appearance
 - Theme : `Breeze`
 - Color scheme : [`BetterDracula`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula.colors) *
+- Wallpapers: [`Dracula Wallpapers`](https://github.com/aynp/dracula-wallpapers)
 - Icons : `Breeze`
 - `Konsole` theme : [`BetterDracula-Konsole`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula-Konsole.colorscheme) *
 
