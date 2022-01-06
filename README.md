@@ -6,8 +6,8 @@
 ## KDE appearance
 - Theme : `Breeze`
 - Color scheme : [`BetterDracula`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula.colors) *
-- Icons : [`Numix-Square`](https://github.com/numixproject/numix-icon-theme-square) with custom folder colors
-- `Konsole` theme : [`BetterDracula-Konsole`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula-Konsole.colorscheme) * 
+- Icons : `Breeze`
+- `Konsole` theme : [`BetterDracula-Konsole`](https://github.com/arslee07/dotfiles/blob/main/BetterDracula-Konsole.colorscheme) *
 
 ## Terminal tools
 - `ls` replacement : [`exa`](https://github.com/ogham/exa)
@@ -25,3 +25,4 @@
 
 
 ###### * my own lol xd
+
