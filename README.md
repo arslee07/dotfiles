@@ -21,7 +21,7 @@
 ## Hardware
 - `CPU` : Intel Core i3-9100f
 - `GPU` : AMD Radeon RX 580 4G
-- `RAM` : 16 GB
+- `RAM` : 16 GB 1333mhz
 - `SSD` : Samsung 860 EVO 500 GB
 
 
