@@ -1,5 +1,6 @@
 local cmd = vim.cmd
 local opt = vim.opt
+local g = vim.g
 
 require('packer').startup(function()
   -- Autocompletion
@@ -116,6 +117,8 @@ endfunction]]
 
 inoremap('<Tab>', '<C-r>=InsertTabWrapper()<CR>')
 
+cmd('colorscheme dracula')
+
 -- Statusline setup
 -- TODO: rewrite to lua
 cmd[[
@@ -123,10 +126,13 @@ set nocompatible
 set laststatus=2
 set statusline=
 
+hi User1 guibg=#44475A guifg=f8f8f2
+hi User9 guibg=#3A3C4F guifg=f8f8f2
+
 " Left side
-set statusline+=%1*
+set statusline+=%1*\ 
 set statusline+=%{StatuslineMode()}
-set statusline+=%9*
+set statusline+=\ %9*
 set statusline+=\ 
 set statusline+=%f " Filename
 set statusline+=\ 
@@ -136,15 +142,13 @@ set statusline+=%r " Is readonly
 
 set statusline+=%=
 
-set statusline+=%1*
+set statusline+=%1*\ 
 set statusline+=%P " File percentage
 set statusline+=\ 
 set statusline+=%l " Current line
 set statusline+=:
 set statusline+=%c " Current column
-
-hi User1 ctermbg=darkgrey ctermfg=white
-hi User9 ctermbg=black ctermfg=white
+set statusline+=\ 
 
 function! StatuslineMode()
   let l:mode=mode()
@@ -180,12 +184,15 @@ let g:netrw_browse_split=0
 let g:netrw_list_hide='.*\.git/$,'.netrw_gitignore#Hide()
 ]]
 
-vim.g.fuzzy_rootcmds = {{"git", "rev-parse", "--show-toplevel"}}
+g.fuzzy_rootcmds = {{"git", "rev-parse", "--show-toplevel"}}
+opt.ts = 4
+opt.sw = 4
 opt.updatetime = 150
 opt.smarttab = true
 opt.expandtab = true
 opt.smartindent = true
 opt.completeopt = {'menu', 'menuone', 'noselect'}
+cmd('filetype plugin on')
 cmd('filetype plugin indent on')
 opt.sessionoptions:append {"tabpages", "globals"}
 opt.whichwrap:append "<>[]hl"
@@ -195,4 +202,3 @@ opt.backup = false
 opt.writebackup = false
 opt.cursorline = true
 
-cmd('colorscheme dracula')
