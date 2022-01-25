@@ -2,6 +2,7 @@ local cmd = vim.cmd
 local opt = vim.opt
 local g = vim.g
 
+
 require('packer').startup(function()
   use 'wbthomason/packer.nvim'  -- Package manager
   
@@ -20,16 +21,20 @@ require('packer').startup(function()
   use 'hrsh7th/cmp-path' -- ...paths
   use 'hrsh7th/cmp-cmdline' -- ...commands
   use 'hrsh7th/vim-vsnip' -- Snippets engine
+  use 'nvim-lua/lsp_extensions.nvim' -- LSP extensions
   
   -- Navigation
   use 'kyazdani42/nvim-tree.lua' -- File explorer
-  use 'cloudhead/neovim-fuzzy' -- Fuzzy file search (TODO: replace with telescope?)
+  use 'nvim-telescope/telescope.nvim' -- Fuzzy engine
+  use 'nvim-telescope/telescope-ui-select.nvim' -- Telescope UI select
 
   -- Coding QoL
   use 'lewis6991/gitsigns.nvim' -- Git integration for buffers
   use 'lukas-reineke/indent-blankline.nvim' -- Indent lines
   use 'p00f/nvim-ts-rainbow' -- Rainbow brackets
   use 'windwp/nvim-autopairs' -- Autopair
+  use 'ray-x/lsp_signature.nvim' -- Better LSP signatures
+  use 'norcalli/nvim-colorizer.lua' -- Colors highlighter
 
   -- Language specific
   use 'dart-lang/dart-vim-plugin' -- Dart syntax highlight etc
@@ -45,36 +50,53 @@ end)
 
 cmd('PackerInstall')
 
-require('nvim-autopairs').setup()
 require('mapx').setup{global="force"}
-require('nvim-tree').setup()
+require('nvim-tree').setup{
+  diagnostics = {
+    enable = false,
+    icons = {
+      hint = "",
+      info = "",
+      warning = "",
+      error = "",
+    }
+  },
+}
 require('gitsigns').setup()
+require('nvim-autopairs').setup()
+require('presence'):setup {
+  main_image = "file",
+}
+require "lsp_signature".setup({
+ vbind = true,
+   handler_opts = {
+    border = "rounded"
+  }
+})
+require('lsp_signature').on_attach()
+require('telescope').setup()
+require('telescope').load_extension('ui-select')
 require("indent_blankline").setup {
     space_char_blankline = " ",
     show_current_context = true,
     show_current_context_start = true,
 }
-require("nvim-treesitter.configs").setup {
-  rainbow = {
-    enable = true,
-    extended_mode = true,
-    max_file_lines = nil,
-  }
-}
+
 local get_hex = require('cokeline/utils').get_hex
 
 require('cokeline').setup({
-  default_hl = {
-    focused = {
-      fg = get_hex('Normal', 'fg'),
-      bg = 'NONE',
+    mappings = {
+      cycle_prev_next = true,
     },
-    unfocused = {
-      fg = get_hex('Comment', 'fg'),
-      bg = 'NONE',
+    default_hl = {
+        focused = {
+            bg = "none"
+        },
+        unfocused = {
+            fg = get_hex("Comment", "fg"),
+            bg = "none"
+        }
     },
-  },
-
   rendering = {
     left_sidebar = {
       filetype = 'NvimTree',
@@ -94,22 +116,26 @@ require('cokeline').setup({
   components = {
     {
       text = function(buffer) return ' ' .. buffer.devicon.icon end,
-      hl = {
-        fg = function(buffer) return buffer.devicon.color end,
-      },
+      hl = {fg = function(buffer) return buffer.devicon.color end},
     },
     {
       text = function(buffer) return buffer.unique_prefix end,
+      hl = {fg = get_hex('Comment', 'fg'), style = 'italic'},
+    },
+    {
+      text = function(buffer) return buffer.filename end,
       hl = {
-        fg = get_hex('Comment', 'fg'),
-        style = 'italic',
+        fg = function(buffer) return buffer.diagnostics.errors ~= 0 and '#ff5555' or buffer.diagnostics.warnings ~= 0 and '#f1fa8c' end,
+        style = function(buffer) return buffer.is_focused and 'bold' or nil end
       },
     },
     {
-      text = function(buffer) return buffer.filename .. ' ' end,
+      text = function(buffer) return buffer.is_modified and ' •' or '' end,
     },
+    {text=' '}
   },
 })
+
 require('lualine').setup {
   options = {
     component_separators = { left = '|', right = '|'},
@@ -117,13 +143,33 @@ require('lualine').setup {
   },
   sections = {
     lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_b = {'branch', 'diff'},
     lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
+    lualine_x = {'diagnostics'},
+    lualine_y = {'filetype'},
+    lualine_z = {'progress', 'location'}
   },
   extensions = {'nvim-tree', 'quickfix'}
+}
+
+opt.termguicolors = true
+
+require('colorizer').setup()
+require("nvim-treesitter.configs").setup {
+  rainbow = {
+    enable = true,
+    extended_mode = true,
+    max_file_lines = nil,
+    colors = {
+      "#f8f8f2",
+      "#bd93f9",
+      "#ff5555",
+      "#f1fa8c",
+      "#50fa7b",
+      "#ffb86c",
+      "#8be9fd",
+    },
+  }
 }
 
 -- LSP SETUP --
@@ -199,17 +245,17 @@ cmp.setup.cmdline(':', {
 -- Setup lspconfig.
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-local servers = {'dartls', 'pylsp', 'gopls'}
-for _, lsp in ipairs(servers) do
+
+local servers = {'dartls', 'gopls', 'pylsp'}
+for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {on_attach=on_attach, capatibilities=capatibilities, flags={debounce_text_changes = 150}}
 end
 ---
 
-cmd("autocmd CursorHold * lua vim.diagnostic.open_float()")
-cmd("autocmd CursorHoldI * silent! lua vim.lsp.buf.signature_help()")
+cmd("autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})")
 cmd("autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()")
 
-nnoremap("<Space><Space>", "<cmd>FuzzyOpen<CR>")
+nnoremap("<Space><Space>", "<cmd>Telescope find_files<CR>")
 
 nnoremap("ge", ":NvimTreeToggle<CR>")
 
