@@ -1,15 +1,15 @@
 local cmd = vim.cmd
 local opt = vim.opt
 local g = vim.g
+local map = vim.api.nvim_set_keymap
 
 
 require('packer').startup(function()
-  use 'wbthomason/packer.nvim'  -- Package manager
+  use 'wbthomason/packer.nvim'  -- Package manager itself
   
   -- API
   use 'nvim-lua/plenary.nvim' -- i forgor :skull:
   use 'kyazdani42/nvim-web-devicons' -- Devicons support
-  use 'b0o/mapx.nvim' -- Better keymapping util
   use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}  -- Treesitter support
   
   -- Completions
@@ -27,6 +27,7 @@ require('packer').startup(function()
   use 'kyazdani42/nvim-tree.lua' -- File explorer
   use 'nvim-telescope/telescope.nvim' -- Fuzzy engine
   use 'nvim-telescope/telescope-ui-select.nvim' -- Telescope UI select
+  use 'folke/trouble.nvim' -- Better UI for diagnostics, quickfix, references, etc
 
   -- Coding QoL
   use 'lewis6991/gitsigns.nvim' -- Git integration for buffers
@@ -35,6 +36,10 @@ require('packer').startup(function()
   use 'windwp/nvim-autopairs' -- Autopair
   use 'ray-x/lsp_signature.nvim' -- Better LSP signatures
   use 'norcalli/nvim-colorizer.lua' -- Colors highlighter
+  use 'kosayoda/nvim-lightbulb' -- Le bulb
+  use 'weilbith/nvim-code-action-menu' -- Code action menu
+  use 'fedepujol/move.nvim' -- Move lines or blocks
+  use 'b3nj5m1n/kommentary' -- Comment lines easily
 
   -- Language specific
   use 'dart-lang/dart-vim-plugin' -- Dart syntax highlight etc
@@ -50,10 +55,9 @@ end)
 
 cmd('PackerInstall')
 
-require('mapx').setup{global="force"}
 require('nvim-tree').setup{
   diagnostics = {
-    enable = false,
+    enable = true,
     icons = {
       hint = "",
       info = "",
@@ -64,6 +68,7 @@ require('nvim-tree').setup{
 }
 require('gitsigns').setup()
 require('nvim-autopairs').setup()
+require('trouble').setup()
 require('presence'):setup {
   main_image = "file",
 }
@@ -135,7 +140,7 @@ require('cokeline').setup({
     {text=' '}
   },
 })
-
+cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
 require('lualine').setup {
   options = {
     component_separators = { left = '|', right = '|'},
@@ -174,7 +179,7 @@ require("nvim-treesitter.configs").setup {
 
 -- LSP SETUP --
 vim.diagnostic.config({
-  virtual_text = false,
+  virtual_text = true,
   signs = true,
   underline = true,
   update_in_insert = true,
@@ -246,39 +251,59 @@ cmp.setup.cmdline(':', {
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 
-local servers = {'dartls', 'gopls', 'pylsp'}
+local servers = {'dartls', 'gopls', 'pylsp', 'clangd'}
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {on_attach=on_attach, capatibilities=capatibilities, flags={debounce_text_changes = 150}}
 end
+
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
 ---
 
-cmd("autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})")
 cmd("autocmd BufWritePre * lua vim.lsp.buf.formatting_sync()")
 
-nnoremap("<Space><Space>", "<cmd>Telescope find_files<CR>")
+map('n', '<A-j>', ":MoveLine(1)<CR>", { noremap = true, silent = true })
+map('n', '<A-k>', ":MoveLine(-1)<CR>", { noremap = true, silent = true })
+map('v', '<A-j>', ":MoveBlock(1)<CR>", { noremap = true, silent = true })
+map('v', '<A-k>', ":MoveBlock(-1)<CR>", { noremap = true, silent = true })
+map('n', '<A-l>', ":MoveHChar(1)<CR>", { noremap = true, silent = true })
+map('n', '<A-h>', ":MoveHChar(-1)<CR>", { noremap = true, silent = true })
+map('v', '<A-l>', ":MoveHBlock(1)<CR>", { noremap = true, silent = true })
+map('v', '<A-h>', ":MoveHBlock(-1)<CR>", { noremap = true, silent = true })
 
-nnoremap("ge", ":NvimTreeToggle<CR>")
+map("n", "<Space><Space>", "<cmd>Telescope find_files<CR>", { noremap = true })
+map("n", "<Space>q", "<cmd>Telescope quickfix<CR>", { noremap = true })
+map("n", "<Space>d", "<cmd>Telescope diagnostics<CR>", { noremap = true })
 
-nnoremap(",", "<cmd>lua vim.lsp.buf.hover()<CR>")
-nnoremap(".", "<cmd>lua vim.lsp.buf.code_action()<CR>")
+map('n', "ge", ":NvimTreeToggle<CR>", { noremap = true })
 
-noremap('x', '"_x')
-noremap('X', '"_x')
-noremap('<Del>', '"_x')
+map('n', ",", "<cmd>lua vim.lsp.buf.hover()<CR>", { noremap = true })
+map('n', ".", "<cmd>CodeActionMenu<CR>", { noremap = true })
+map('n', "gd", "<cmd>lua vim.lsp.buf.definition<CR>", { noremap = true })
+map('n', "gD", "<cmd>Telescope lsp_declaration<CR>", { noremap = true })
+map('n', "gr", "<cmd>Telescope lsp_references<CR>", { noremap = true })
+map('n', "gi", "<cmd>Telescope lsp_implementations<CR>", { noremap = true })
 
-noremap('j', 'gj')
-noremap('j', 'gj')
-noremap('<Up>', 'gk')
-noremap('<Down>', 'gj')
-inoremap('<Up>', '<C-o>gk')
-inoremap('<Down>', '<C-o>gj')
+map('', 'x', '"_x', { noremap = true })
+map('', 'X', '"_x', { noremap = true })
+map('', '<Del>', '"_x', { noremap = true })
+
+map('', 'j', 'gj', { noremap = true })
+map('', 'j', 'gj', { noremap = true })
+map('', '<Up>', 'gk', { noremap = true })
+map('', '<Down>', 'gj', { noremap = true })
+map('i', '<Up>', '<C-o>gk', { noremap = true })
+map('i', '<Down>', '<C-o>gj', { noremap = true })
 
 cmd('colorscheme dracula')
 
-g.fuzzy_rootcmds = {{"git", "rev-parse", "--show-toplevel"}}
+g.code_action_menu_show_details = false
 opt.ts = 4
 opt.sw = 4
-opt.updatetime = 150
+opt.updatetime = 50
 opt.smarttab = true
 opt.expandtab = true
 opt.smartindent = true
@@ -292,4 +317,3 @@ opt.mouse = "a"
 opt.backup = false
 opt.writebackup = false
 opt.cursorline = true
-
