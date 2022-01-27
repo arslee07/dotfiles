@@ -45,7 +45,8 @@ require('packer').startup(function()
   use 'dart-lang/dart-vim-plugin' -- Dart syntax highlight etc
   
   -- Appearance
-  use 'Mofiqul/dracula.nvim' -- Dracula theme
+  --use 'Mofiqul/dracula.nvim' -- Dracula theme
+  use 'dracula/vim'
   use 'noib3/nvim-cokeline' -- Bufferline
   use 'nvim-lualine/lualine.nvim' -- Statusline
 
@@ -282,7 +283,7 @@ map('n', "ge", ":NvimTreeToggle<CR>", { noremap = true })
 
 map('n', ",", "<cmd>lua vim.lsp.buf.hover()<CR>", { noremap = true })
 map('n', ".", "<cmd>CodeActionMenu<CR>", { noremap = true })
-map('n', "gd", "<cmd>lua vim.lsp.buf.definition<CR>", { noremap = true })
+map('n', "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true })
 map('n', "gD", "<cmd>Telescope lsp_declaration<CR>", { noremap = true })
 map('n', "gr", "<cmd>Telescope lsp_references<CR>", { noremap = true })
 map('n', "gi", "<cmd>Telescope lsp_implementations<CR>", { noremap = true })
@@ -299,6 +300,8 @@ map('i', '<Up>', '<C-o>gk', { noremap = true })
 map('i', '<Down>', '<C-o>gj', { noremap = true })
 
 cmd('colorscheme dracula')
+
+g.dart_style_guide = 2
 
 g.code_action_menu_show_details = false
 opt.ts = 4
