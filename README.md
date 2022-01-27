@@ -1,7 +1,7 @@
 ## General
 - Distro : `Arch Linux`
 - Shell : [`fish`](https://fishshell.com/)
-- Desktop Enviroment : `KDE Plasma 5`
+- Desktop Enviroment : `KDE Plasma`
 
 ## Plasma appearance
 - Theme : `Breeze`
