@@ -32,13 +32,7 @@ alias ls='exa  --color=always --group-directories-first'    # not dotted files a
 alias lsa='exa -a --color=always --group-directories-first' # all files and dirs
 alias ll='exa -l --color=always --group-directories-first'  # long format
 alias lt='exa -aT --color=always --group-directories-first' # tree listing
-alias l.="exa -a | egrep '^\.'"                                     # show only dotfiles
-
-# Replace du with dust
-alias du="dust"
-
-# Replace cat with bat
-alias cat="bat"
+alias l.="exa -a | egrep '^\.'"                             # show only dotfiles
 
 export PATH="$PATH:/home/arslee/flutter/bin"
 export CHROME_EXECUTABLE="/usr/bin/google-chrome-stable"
@@ -50,8 +44,9 @@ export BAT_THEME=Dracula
 
 starship init fish | source
 
-bash ~/.config/fish/theme.sh
-
+if status is-interactive
+    bash ~/.config/fish/theme.sh
+end
 set -Ux FZF_DEFAULT_OPTS "--color=fg:#f8f8f2,bg:#282a36,hl:#bd93f9 --color=fg+:#f8f8f2,bg+:#44475a,hl+:#bd93f9 --color=info:#ffb86c,prompt:#50fa7b,pointer:#ff79c6 --color=marker:#ff79c6,spinner:#ffb86c,header:#6272a4"
 
 clear
