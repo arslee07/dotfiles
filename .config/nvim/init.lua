@@ -49,6 +49,7 @@ require('packer').startup(function()
   use 'dracula/vim'
   use 'noib3/nvim-cokeline' -- Bufferline
   use 'nvim-lualine/lualine.nvim' -- Statusline
+  use 'tami5/lspsaga.nvim'
 
   -- Other
   use 'andweeb/presence.nvim' -- Discord presence
@@ -70,6 +71,17 @@ require('nvim-tree').setup{
 require('gitsigns').setup()
 require('nvim-autopairs').setup()
 require('trouble').setup()
+require('lspsaga').setup {
+    code_action_keys = {
+        quit = "<Esc>",
+        exec = "<CR>",
+    },
+    rename_action_keys = {
+        quit = "<Esc>",
+        exec = "<CR>",
+    },
+    rename_prompt_prefix = ">",
+}
 require('presence'):setup {
   main_image = "file",
 }
@@ -180,7 +192,7 @@ require("nvim-treesitter.configs").setup {
 
 -- LSP SETUP --
 vim.diagnostic.config({
-  virtual_text = true,
+  virtual_text = false,
   signs = true,
   underline = true,
   update_in_insert = true,
@@ -254,7 +266,7 @@ local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protoco
 
 local servers = {'dartls', 'gopls', 'pylsp', 'clangd'}
 for _, lsp in pairs(servers) do
-  require('lspconfig')[lsp].setup {on_attach=on_attach, capatibilities=capatibilities, flags={debounce_text_changes = 150}}
+  require('lspconfig')[lsp].setup {capatibilities=capatibilities, flags={debounce_text_changes = 150}}
 end
 
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
@@ -281,12 +293,18 @@ map("n", "<Space>d", "<cmd>Telescope diagnostics<CR>", { noremap = true })
 
 map('n', "ge", ":NvimTreeToggle<CR>", { noremap = true })
 
-map('n', ",", "<cmd>lua vim.lsp.buf.hover()<CR>", { noremap = true })
-map('n', ".", "<cmd>CodeActionMenu<CR>", { noremap = true })
+map('n', "<leader>h", "<cmd>Lspsaga hover_doc<CR>", { silent = true, noremap = true })
+map('n', "<leader>d", "<cmd>Lspsaga show_line_diagnostics<CR>", { silent = true, noremap = true })
+map('n', "<leader>a", "<cmd>Lspsaga code_action<CR>", { silent = true, noremap = true })
+map('n', "<leader>r", "<cmd>Lspsaga rename<CR>", { silent = true, noremap = true })
+map('n', '.', '<leader>a', {})
+map('n', ',', '<leader>h', {})
 map('n', "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", { noremap = true })
 map('n', "gD", "<cmd>Telescope lsp_declaration<CR>", { noremap = true })
-map('n', "gr", "<cmd>Telescope lsp_references<CR>", { noremap = true })
+map('n', "gR", "<cmd>Telescope lsp_references<CR>", { noremap = true })
 map('n', "gi", "<cmd>Telescope lsp_implementations<CR>", { noremap = true })
+map("n", "<C-k>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<cr>", {})
+map("n", "<C-j>", "<cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<cr>", {})
 
 map('', 'x', '"_x', { noremap = true })
 map('', 'X', '"_x', { noremap = true })
