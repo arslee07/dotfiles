@@ -3,6 +3,7 @@ local opt = vim.opt
 local g = vim.g
 local map = vim.api.nvim_set_keymap
 
+local kind_icons = {Text = "",Method = "",Function = "",Constructor = "",Field = "",Variable = "",Class = "ﴯ",Interface = "",Module = "",Property = "ﰠ",Unit = "",Value = "",Enum = "",Keyword = "",Snippet = "",Color = "",File = "",Reference = "",Folder = "",EnumMember = "",Constant = "",Struct = "",Event = "",Operator = "",TypeParameter = ""}
 
 require('packer').startup(function()
   use 'wbthomason/packer.nvim'  -- Package manager itself
@@ -43,6 +44,7 @@ require('packer').startup(function()
 
   -- Language specific
   use 'dart-lang/dart-vim-plugin' -- Dart syntax highlight etc
+  use 'Nash0x7E2/awesome-flutter-snippets' -- Flutter snppets
   
   -- Appearance
   --use 'Mofiqul/dracula.nvim' -- Dracula theme
@@ -217,16 +219,19 @@ cmp.setup({
   },
   mapping = {
     ["<Tab>"] = cmp.mapping(function(fallback)
+      -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
       if cmp.visible() then
-        cmp.select_next_item()
-      elseif vim.fn["vsnip#available"](1) == 1 then
-        feedkey("<Plug>(vsnip-expand-or-jump)", "")
-      elseif has_words_before() then
-        cmp.complete()
+        local entry = cmp.get_selected_entry()
+	if not entry then
+	  cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+	else
+	  cmp.confirm()
+	end
       else
         fallback()
       end
-    end, { "i", "s" }),
+    end, {"i","s","c",}),
+
     ["<S-Tab>"] = cmp.mapping(function()
       if cmp.visible() then
         cmp.select_prev_item()
@@ -234,17 +239,31 @@ cmp.setup({
         feedkey("<Plug>(vsnip-jump-prev)", "")
       end
     end, { "i", "s" }),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    -- ['<CR>'] = cmp.mapping.confirm({ select = true }),
   },
   completion = {
-    autocomplete = false,
+    -- autocomplete = false,
   },
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
     { name = 'vsnip' }, 
   }, {
     { name = 'buffer' },
-  })
+  }),
+  formatting = {
+    format = function(entry, vim_item)
+        vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
+        vim_item.menu = ({
+            buffer = "[Buffer]",
+            nvim_lsp = "[LSP]",
+            vsnip = "[VSnip]",
+            luasnip = "[LuaSnip]",
+            nvim_lua = "[Lua]",
+            latex_symbols = "[LaTeX]",
+      })[entry.source.name]
+      return vim_item
+    end
+  }
 })
 
 cmp.setup.cmdline('/', {
@@ -264,7 +283,7 @@ cmp.setup.cmdline(':', {
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 
-local servers = {'dartls', 'gopls', 'pylsp', 'clangd'}
+local servers = {'dartls', 'gopls', 'pylsp', 'clangd', 'rust_analyzer'}
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {capatibilities=capatibilities, flags={debounce_text_changes = 150}}
 end
@@ -317,6 +336,7 @@ map('', '<Down>', 'gj', { noremap = true })
 map('i', '<Up>', '<C-o>gk', { noremap = true })
 map('i', '<Down>', '<C-o>gj', { noremap = true })
 
+g.dracula_colorterm = 0
 cmd('colorscheme dracula')
 
 g.dart_style_guide = 2
