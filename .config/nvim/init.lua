@@ -49,6 +49,7 @@ require('packer').startup(function()
   -- Appearance
   --use 'Mofiqul/dracula.nvim' -- Dracula theme
   use 'dracula/vim'
+  use 'ellisonleao/gruvbox.nvim' -- Gruvbox theme
   use 'noib3/nvim-cokeline' -- Bufferline
   use 'nvim-lualine/lualine.nvim' -- Statusline
   use 'tami5/lspsaga.nvim'
@@ -146,7 +147,7 @@ require('cokeline').setup({
       text = function(buffer) return buffer.filename end,
       hl = {
         fg = function(buffer) return buffer.diagnostics.errors ~= 0 and '#ff5555' or buffer.diagnostics.warnings ~= 0 and '#f1fa8c' end,
-        style = function(buffer) return buffer.is_focused and 'bold' or nil end
+        style = function(buffer) return buffer.is_focused and 'underline' or nil end
       },
     },
     {
@@ -181,13 +182,13 @@ require("nvim-treesitter.configs").setup {
     extended_mode = true,
     max_file_lines = nil,
     colors = {
-      "#f8f8f2",
-      "#bd93f9",
-      "#ff5555",
-      "#f1fa8c",
-      "#50fa7b",
-      "#ffb86c",
-      "#8be9fd",
+      "#FB4934",
+      "#B8BB26",
+      "#FABD2F",
+      "#83A598",
+      "#D3869B",
+      "#8EC07C",
+      "#FE8019"
     },
   }
 }
@@ -280,10 +281,43 @@ cmp.setup.cmdline(':', {
 })
 
 -- Setup lspconfig.
+local configs = require'lspconfig.configs'
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+capabilities.textDocument.completion.completionItem.snippetSupport = true
 
+if not configs.ls_emmet then
+  configs.ls_emmet = {
+    default_config = {
+      cmd = { 'ls_emmet', '--stdio' };
+      filetypes = {
+        'html',
+        'css',
+        'scss',
+        'javascript',
+        'javascriptreact',
+        'typescript',
+        'typescriptreact',
+        'haml',
+        'xml',
+        'xsl',
+        'pug',
+        'slim',
+        'sass',
+        'stylus',
+        'less',
+        'sss',
+        'hbs',
+        'handlebars',
+      };
+      root_dir = function(fname)
+        return vim.loop.cwd()
+      end;
+      settings = {};
+    };
+  }
+end
 
-local servers = {'dartls', 'gopls', 'pylsp', 'clangd', 'rust_analyzer'}
+local servers = {'dartls', 'gopls', 'pylsp', 'clangd', 'rust_analyzer', 'html', 'cssls', 'eslint', 'ls_emmet'}
 for _, lsp in pairs(servers) do
   require('lspconfig')[lsp].setup {capatibilities=capatibilities, flags={debounce_text_changes = 150}}
 end
@@ -336,8 +370,12 @@ map('', '<Down>', 'gj', { noremap = true })
 map('i', '<Up>', '<C-o>gk', { noremap = true })
 map('i', '<Down>', '<C-o>gj', { noremap = true })
 
-g.dracula_colorterm = 0
-cmd('colorscheme dracula')
+--[[ g.dracula_colorterm = 0
+cmd('colorscheme dracula') ]]
+
+opt.termguicolors = true
+vim.o.background = "dark"
+cmd('colorscheme gruvbox')
 
 g.dart_style_guide = 2
 
