@@ -1,7 +1,7 @@
 ## General
 - Distro : [`Arch Linux`](https://archlinux.org/)
 - Shell : [`fish`](https://fishshell.com/)
-- Text editor : [`neovim`](https://neovim.io/)
+- Text editor : [`Helix`](https://helix-editor.com/)
 - Desktop Enviroment : [`KDE Plasma`](https://kde.org/)
 
 ## Plasma appearance
@@ -10,7 +10,6 @@
 - Wallpapers: [`Here`](https://github.com/arslee07/dotfiles/blob/main/wallpapers)
 - Icons : `Breeze`
 - `Konsole` theme : [`Gruvbox-Dark-Konsole`](https://github.com/arslee07/dotfiles/blob/main/Gruvbox-Dark-Konsole.colorscheme)
-- Tiling extension : [`Bismuth`](https://github.com/Bismuth-Forge/bismuth)
 
 ## Terminal tools
 - Shell prompt : [`Starship`](https://starship.rs/)
