@@ -40,7 +40,7 @@ export PATH="$PATH":"/home/arslee/.pub-cache/bin"
 export PATH="$PATH":"/home/arslee/.local/bin"
 
 export MICRO_TRUECOLOR=1
-export BAT_THEME=Dracula
+export BAT_THEME=gruvbox-dark
 
 starship init fish | source
 
